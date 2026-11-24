@@ -1,0 +1,9 @@
+Run: none_20261123-150208   attack: none   detector mode: ?
+
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests=  887  success=100.0%  p50=1.8 ms  p95=2.5 ms
+
+Blocked sources: 0
+Legitimate clients blocked: none

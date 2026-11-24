@@ -1,0 +1,11 @@
+﻿detector  | [defense] iptables backend: iptables
+detector  | [detector] mode=ENTROPY  window=5.0s  total=55.0s
+detector  | Traceback (most recent call last):
+detector  |   File "/app/detector.py", line 396, in <module>
+detector  |     main()
+detector  |   File "/app/detector.py", line 356, in main
+detector  |     close_window(k, w, t0 + (k + 1) * WINDOW)
+detector  |   File "/app/detector.py", line 290, in close_window
+detector  |     alarm = int(a_ent or a_syn or (ml and ml_attack >= 10))
+detector  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+detector  | TypeError: int() argument must be a string, a bytes-like object or a real number, not 'NoneType'

@@ -1,0 +1,23 @@
+Run: http-nodefense_20261123-174233   attack: http   detector mode: ENTROPY
+
+Attack:            45s -> 106s
+Detection delay:   5.0 s after the attack started
+Time to defense:   None s
+Client recovery:   None s after the defense started
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests=  706  success=100.0%  p50=1.8 ms  p95=2.5 ms
+  attack_before_defense    requests=  265  success=46.4%  p50=74.8 ms  p95=1134.7 ms
+  attack_with_defense      requests=    0  success=None%  p50=None ms  p95=None ms
+  after_attack             requests=  460  success=100.0%  p50=1.9 ms  p95=2.7 ms
+
+Would-block (dry run) sources: 20   precision=1.0  recall=1.0  (attackers=20)
+Legitimate clients blocked: none
+
+Window-level detection (21 windows, 12 attack; all windows after calibration):
+  detector                 prec  recall     F1     FPR     MCC   TP/FP/FN/TN
+  detector                0.923   1.000  0.960   0.111   0.906   12/1/0/8
+  fixed_rate_threshold    0.923   1.000  0.960   0.111   0.906   12/1/0/8
+
+Capture: 568712 packets seen by the kernel, 0 dropped (0.0%)

@@ -1,0 +1,14 @@
+﻿detector  | [ml] model loaded: 44 features, threshold 0.5, trained on CIC-IDS-2017 Friday (225745 flows) + 5 lab runs (52339 flows)
+detector  | [defense] iptables backend: iptables
+detector  | [detector] mode=ML  window=2.5s  confirm=2 window(s)  total=60.0s
+detector  | [w000] pps=  167.2  src=  6  H=2.54  z_H=+nan  syn/s=14
+detector  | [w004] pps=  192.8  src=  6  H=2.53  z_H=+nan  syn/s=16
+detector  | [baseline] pps=187.0 (sd 46.8)  H=2.53 bits (sd 0.15)  sources=6.0  busiest source=132 pkts/window
+detector  | [SUSPECT] window 8: pps=9074  waiting to confirm (1/2)
+detector  | [ALARM] window 9: http_flood  pps=9043  z_H=+2.0
+detector  | [DEFEND] blocked 11 sources (ml)
+detector  | [DEFEND] blocked 5 sources (ml)
+detector  | [DEFEND] blocked 4 sources (ml)
+detector  | [OK] traffic back to normal (window 19)
+detector  | [w020] pps=  210.0  src=  7  H=2.76  z_H=+1.5  syn/s=15
+detector  | [detector] done. windows=24  kernel packets=102916  dropped=0 (0.00%)

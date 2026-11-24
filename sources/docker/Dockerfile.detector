@@ -1,0 +1,17 @@
+# Built from the project root (see docker-compose.yml).
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        iptables iproute2 procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Versions match the ones used on the host to train the model, so the saved
+# model loads without version warnings.
+COPY detection/requirements-detector.txt /app/requirements-detector.txt
+RUN pip install --no-cache-dir -r /app/requirements-detector.txt
+
+WORKDIR /app
+COPY sources/common/labcommon.py /app/
+COPY detection/capture.py detection/detector.py detection/flow_extractor.py detection/ml_layer.py /app/
+
+CMD ["python", "-u", "/app/detector.py"]

@@ -1,0 +1,23 @@
+Run: http_20261123-151146   attack: http   detector mode: ENTROPY
+
+Attack:            45s -> 106s
+Detection delay:   5.0 s after the attack started
+Time to defense:   5.9 s
+Client recovery:   4.1 s after the defense started
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests=  583  success=100.0%  p50=1.8 ms  p95=2.1 ms
+  attack_before_defense    requests=   19  success=47.4%  p50=68.5 ms  p95=1086.6 ms
+  attack_with_defense      requests=  609  success=93.6%  p50=1.8 ms  p95=2.3 ms
+  after_attack             requests=  337  success=95.5%  p50=1.8 ms  p95=2.4 ms
+
+Blocked sources: 21   precision=0.952  recall=1.0  (attackers=20)
+Legitimate clients blocked: ['172.20.0.3']
+
+Window-level detection (5 windows, 2 attack; windows up to the first defense action):
+  detector                 prec  recall     F1     FPR     MCC   TP/FP/FN/TN
+  detector                1.000   1.000  1.000   0.000   1.000   2/0/0/3
+  fixed_rate_threshold    1.000   1.000  1.000   0.000   1.000   2/0/0/3
+
+Capture: 119878 packets seen by the kernel, 0 dropped (0.0%)

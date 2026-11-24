@@ -1,0 +1,9 @@
+{
+    "bots":  20,
+    "attack":  "none",
+    "defense":  true,
+    "baseline":  60,
+    "total":  60,
+    "clients":  6,
+    "attack_seconds":  0
+}

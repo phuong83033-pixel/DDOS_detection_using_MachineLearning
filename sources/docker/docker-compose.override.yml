@@ -1,0 +1,79 @@
+# ============================================================================
+# One-command demo.  Docker Compose loads this file automatically next to
+# docker-compose.yml, so from THIS folder a plain
+#
+#       docker compose up -d --build
+#
+# starts everything: victim, detector, 6 legitimate users, 20 bots and the viewer.
+#
+#   0 - 20 s   normal traffic (the detector learns what "normal" looks like)
+#   20 - 40 s  the 20 bots flood the victim, the detector raises the alarm and blocks them
+#   40 - 60 s  the users carry on, the victim has recovered
+#
+# Open http://localhost:8080 to see the victim's page. Stop with: docker compose down
+#
+# run_lab.ps1 / run_lab.sh name docker-compose.yml explicitly, so they do NOT load this
+# file and keep their longer 60 s + 120 s timeline.
+# ============================================================================
+
+x-demo: &demo
+  BASELINE: ${BASELINE:-20}                # seconds of normal traffic
+  ATTACK: ${ATTACK:-20}                    # seconds the bots attack
+  TOTAL: ${TOTAL:-60}                      # whole demo
+
+services:
+
+  # Runs first, on every "up": clears the old results and writes a fresh shared start time,
+  # so nothing has to be prepared by hand.
+  init:
+    image: nginx:alpine
+    container_name: lab_init
+    restart: "no"
+    network_mode: none                     # needs no network (otherwise Compose makes an extra "default" one)
+    volumes:
+      - ../../output/results:/results
+    environment:
+      <<: *demo
+      BOTS: ${BOTS:-20}
+      CLIENTS: ${CLIENTS:-6}
+      START_DELAY: ${START_DELAY:-20}      # the containers need a few seconds to come up
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf /results/*
+        echo "ts,source,event,detail" > /results/events.csv
+        printf '{"attack": "http", "baseline": %s, "attack_seconds": %s, "total": %s, "bots": %s, "clients": %s, "defense": true}\n' "$$BASELINE" "$$ATTACK" "$$TOTAL" "$$BOTS" "$$CLIENTS" > /results/timeline.json
+        echo $$(( $$(date +%s) + $$START_DELAY )) > /results/t0
+        echo "[init] start time written, the demo begins in $$START_DELAY s"
+
+  victim:
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+  detector:
+    environment:
+      <<: *demo
+      # 2.5 s windows: window 0 is start-up noise and the next 5 (2.5-15 s) are the baseline, so the
+      # detector is ready before the attack at 20 s. The alarm waits for 2 suspicious windows
+      # in a row (5 s after the attack starts) before it acts, then blocks every 2.5 s.
+      WINDOW: ${WINDOW:-2.5}
+      CALIB_WINDOWS: ${CALIB_WINDOWS:-5}
+      CONFIRM_WINDOWS: ${CONFIRM_WINDOWS:-2}
+
+  client:
+    environment:
+      <<: *demo
+    deploy:
+      replicas: ${CLIENTS:-6}
+
+  bot:
+    environment:
+      <<: *demo
+    deploy:
+      replicas: ${BOTS:-20}
+
+  # In the demo the viewer starts with everything else.
+  viewer:
+    profiles: !reset []

@@ -1,0 +1,82 @@
+{
+  "run": "http_20261123-214805",
+  "attack": "http",
+  "attack_start_s": 45.1,
+  "attack_stop_s": 86.0,
+  "detector_mode": "ML",
+  "detection_delay_s": 5.0,
+  "time_to_defense_s": 5.0,
+  "false_alarm_events_before_attack": 0,
+  "syn_protection": null,
+  "client": {
+    "baseline": {
+      "requests": 758,
+      "success_pct": 100.0,
+      "p50_ms": 3.4,
+      "p95_ms": 10.4
+    },
+    "attack_before_defense": {
+      "requests": 22,
+      "success_pct": 59.1,
+      "p50_ms": 143.9,
+      "p95_ms": 1174.5
+    },
+    "attack_with_defense": {
+      "requests": 484,
+      "success_pct": 95.5,
+      "p50_ms": 3.7,
+      "p95_ms": 164.6
+    },
+    "after_attack": {
+      "requests": 318,
+      "success_pct": 100.0,
+      "p50_ms": 3.8,
+      "p95_ms": 20.4
+    }
+  },
+  "client_recovery_s": 9.9,
+  "defense_active": true,
+  "block": {
+    "attackers": 20,
+    "blocked": 20,
+    "precision": 1.0,
+    "recall": 1.0,
+    "legit_clients_blocked": []
+  },
+  "windows": {
+    "note": "windows up to the first defense action",
+    "evaluated": 5,
+    "attack_windows": 2,
+    "detector": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "mcc": 1.0
+    },
+    "fixed_rate_threshold": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "tn": 3,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "mcc": 1.0
+    }
+  },
+  "capture": {
+    "kernel_packets": 100688,
+    "dropped": 0,
+    "loss_pct": 0.0
+  },
+  "ml": {
+    "flows": 9645,
+    "attack_flows": 8054
+  }
+}

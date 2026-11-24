@@ -1,0 +1,11 @@
+﻿detector  | [defense] iptables backend: iptables
+detector  | [detector] mode=ENTROPY  window=5.0s  total=135.0s
+detector  | [w000] pps=  164.4  src=  6  H=2.53  z_H=+nan  syn/s=14
+detector  | [w004] pps=  175.6  src=  6  H=2.56  z_H=+nan  syn/s=15
+detector  | [baseline] pps=174.8 (sd 43.7)  H=2.55 bits (sd 0.15)  sources=6.0  busiest source=200 pkts/window
+detector  | [w008] pps=  185.2  src=  6  H=2.54  z_H=-0.0  syn/s=15
+detector  | [ALARM] window 9: udp_flood  pps=11641  z_H=+12.4
+detector  | [DEFEND] blocked 20 sources (kmeans_ratio)
+detector  | [OK] traffic back to normal (window 24)
+detector  | [w024] pps=  184.0  src=  6  H=2.55  z_H=+0.0  syn/s=15
+detector  | [detector] done. windows=27  kernel packets=791395  dropped=0 (0.00%)

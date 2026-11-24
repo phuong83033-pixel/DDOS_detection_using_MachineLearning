@@ -1,0 +1,9 @@
+{
+    "bots":  20,
+    "attack":  "http",
+    "defense":  false,
+    "baseline":  45,
+    "total":  135,
+    "clients":  6,
+    "attack_seconds":  60
+}

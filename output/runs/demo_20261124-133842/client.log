@@ -1,0 +1,12 @@
+﻿client-3  | [client 172.20.0.12] start, interval about 0.49s, total 60s
+client-3  | [client 172.20.0.12] done
+client-2  | [client 172.20.0.4] start, interval about 0.49s, total 60s
+client-2  | [client 172.20.0.4] done
+client-6  | [client 172.20.0.14] start, interval about 0.26s, total 60s
+client-6  | [client 172.20.0.14] done
+client-1  | [client 172.20.0.8] start, interval about 0.39s, total 60s
+client-1  | [client 172.20.0.8] done
+client-4  | [client 172.20.0.10] start, interval about 0.52s, total 60s
+client-4  | [client 172.20.0.10] done
+client-5  | [client 172.20.0.6] start, interval about 0.37s, total 60s
+client-5  | [client 172.20.0.6] done

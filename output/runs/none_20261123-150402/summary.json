@@ -1,0 +1,53 @@
+{
+  "run": "none_20261123-150402",
+  "attack": "none",
+  "attack_start_s": null,
+  "attack_stop_s": null,
+  "detector_mode": "ENTROPY",
+  "false_alarm_events_before_attack": 0,
+  "syn_protection": null,
+  "client": {
+    "baseline": {
+      "requests": 840,
+      "success_pct": 100.0,
+      "p50_ms": 1.9,
+      "p95_ms": 2.3
+    }
+  },
+  "client_recovery_s": null,
+  "block": {
+    "blocked": 0,
+    "legit_clients_blocked": []
+  },
+  "windows": {
+    "evaluated": 6,
+    "attack_windows": 0,
+    "detector": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 6,
+      "precision": NaN,
+      "recall": NaN,
+      "f1": NaN,
+      "fpr": 0.0,
+      "mcc": NaN
+    },
+    "fixed_rate_threshold": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 6,
+      "precision": NaN,
+      "recall": NaN,
+      "f1": NaN,
+      "fpr": 0.0,
+      "mcc": NaN
+    }
+  },
+  "capture": {
+    "kernel_packets": 9981,
+    "dropped": 0,
+    "loss_pct": 0.0
+  }
+}

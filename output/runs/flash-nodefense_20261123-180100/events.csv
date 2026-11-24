@@ -1,0 +1,4 @@
+ts,source,event,detail
+1795431492.605,detector,start,mode=ENTROPY;window=5.0;iptables=iptables;k_z=3.0;defense=0
+1795431536.007,detector,baseline,pps=183.0;H=2.53;sd_pps=45.7;sd_H=0.15;sources=6.0
+1795431641.171,detector,stop,windows=27;kernel_pkts=56864;kernel_drops=0;loss=0.00%

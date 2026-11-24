@@ -1,0 +1,14 @@
+# Built from the project root (see docker-compose.yml).
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        hping3 apache2-utils iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY sources/attacker/entrypoint_attacker.sh /app/entrypoint.sh
+# Scripts edited on Windows may carry CRLF line endings, which make bash fail with
+# "required file not found". Strip them at build time.
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]

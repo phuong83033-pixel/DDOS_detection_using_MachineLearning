@@ -1,0 +1,57 @@
+﻿detector  | [ml] model loaded: 44 features, threshold 0.5, trained on CIC-IDS-2017 Friday (225745 flows) + 5 lab runs (52339 flows)
+detector  | [defense] iptables backend: iptables
+detector  | [detector] mode=ML  window=5.0s  total=105.0s
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [w000] pps=  197.6  src=  6  H=2.49  z_H=+nan  syn/s=16
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [w004] pps=  214.6  src=  6  H=2.51  z_H=+nan  syn/s=17
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [baseline] pps=213.1 (sd 53.3)  H=2.51 bits (sd 0.15)  sources=6.0  busiest source=247 pkts/window
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [w008] pps=  202.0  src=  6  H=2.52  z_H=+0.1  syn/s=16
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [ALARM] window 9: http_flood  pps=4273  z_H=+2.1
+detector  | [DEFEND] blocked 7 sources (ml)
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [DEFEND] blocked 6 sources (ml)
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [DEFEND] blocked 5 sources (ml)
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [DEFEND] blocked 2 sources (ml)
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | /usr/local/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but RandomForestClassifier was fitted with feature names
+detector  |   warnings.warn(
+detector  | [OK] traffic back to normal (window 20)
+detector  | [w020] pps=  225.8  src=  7  H=2.68  z_H=+1.2  syn/s=17
+detector  | [detector] done. windows=21  kernel packets=100688  dropped=0 (0.00%)

@@ -1,0 +1,9 @@
+{
+    "bots":  20,
+    "attack":  "flash",
+    "defense":  true,
+    "baseline":  45,
+    "total":  125,
+    "clients":  6,
+    "attack_seconds":  60
+}

@@ -1,0 +1,75 @@
+{
+  "run": "syn_20261123-152142",
+  "attack": "syn",
+  "attack_start_s": 45.9,
+  "attack_stop_s": 105.9,
+  "detector_mode": "ENTROPY",
+  "detection_delay_s": null,
+  "time_to_defense_s": null,
+  "false_alarm_events_before_attack": 0,
+  "syn_protection": null,
+  "client": {
+    "baseline": {
+      "requests": 659,
+      "success_pct": 100.0,
+      "p50_ms": 1.8,
+      "p95_ms": 2.1
+    },
+    "attack_before_defense": {
+      "requests": 853,
+      "success_pct": 100.0,
+      "p50_ms": 1.7,
+      "p95_ms": 2.0
+    },
+    "attack_with_defense": {
+      "requests": 0,
+      "success_pct": null,
+      "p50_ms": null,
+      "p95_ms": null
+    },
+    "after_attack": {
+      "requests": 416,
+      "success_pct": 100.0,
+      "p50_ms": 1.8,
+      "p95_ms": 2.1
+    }
+  },
+  "client_recovery_s": null,
+  "defense_active": false,
+  "block": {
+    "blocked": 0,
+    "legit_clients_blocked": []
+  },
+  "windows": {
+    "note": "all windows after calibration",
+    "evaluated": 21,
+    "attack_windows": 12,
+    "detector": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 12,
+      "tn": 9,
+      "precision": NaN,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fpr": 0.0,
+      "mcc": NaN
+    },
+    "fixed_rate_threshold": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 12,
+      "tn": 9,
+      "precision": NaN,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fpr": 0.0,
+      "mcc": NaN
+    }
+  },
+  "capture": {
+    "kernel_packets": 23065,
+    "dropped": 0,
+    "loss_pct": 0.0
+  }
+}

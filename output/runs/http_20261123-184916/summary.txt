@@ -1,0 +1,23 @@
+Run: http_20261123-184916   attack: http   detector mode: ML
+
+Attack:            60s -> 181s
+Detection delay:   5.0 s after the attack started
+Time to defense:   5.1 s
+Client recovery:   4.9 s after the defense started
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests= 1087  success=100.0%  p50=1.8 ms  p95=2.4 ms
+  attack_before_defense    requests=   19  success=47.4%  p50=57.1 ms  p95=1631.3 ms
+  attack_with_defense      requests= 2047  success=99.3%  p50=1.8 ms  p95=4.4 ms
+  after_attack             requests=  718  success=100.0%  p50=1.8 ms  p95=2.5 ms
+
+Blocked sources: 20   precision=1.0  recall=1.0  (attackers=20)
+Legitimate clients blocked: none
+
+Window-level detection (8 windows, 2 attack; windows up to the first defense action):
+  detector                 prec  recall     F1     FPR     MCC   TP/FP/FN/TN
+  detector                1.000   1.000  1.000   0.000   1.000   2/0/0/6
+  fixed_rate_threshold    1.000   1.000  1.000   0.000   1.000   2/0/0/6
+
+Capture: 187537 packets seen by the kernel, 0 dropped (0.0%)

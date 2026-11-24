@@ -1,0 +1,23 @@
+Run: udp_20261123-151836   attack: udp   detector mode: ENTROPY
+
+Attack:            45s -> 106s
+Detection delay:   5.0 s after the attack started
+Time to defense:   5.9 s
+Client recovery:   4.1 s after the defense started
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests=  654  success=100.0%  p50=1.8 ms  p95=2.1 ms
+  attack_before_defense    requests=   88  success=100.0%  p50=1.6 ms  p95=2.0 ms
+  attack_with_defense      requests=  810  success=100.0%  p50=1.6 ms  p95=1.9 ms
+  after_attack             requests=  435  success=100.0%  p50=1.8 ms  p95=2.6 ms
+
+Blocked sources: 20   precision=1.0  recall=1.0  (attackers=20)
+Legitimate clients blocked: none
+
+Window-level detection (5 windows, 2 attack; windows up to the first defense action):
+  detector                 prec  recall     F1     FPR     MCC   TP/FP/FN/TN
+  detector                1.000   1.000  1.000   0.000   1.000   2/0/0/3
+  fixed_rate_threshold    1.000   1.000  1.000   0.000   1.000   2/0/0/3
+
+Capture: 791395 packets seen by the kernel, 0 dropped (0.0%)

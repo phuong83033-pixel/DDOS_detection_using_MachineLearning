@@ -1,0 +1,190 @@
+# ============================================================================
+# DDoS detection lab  (Topic 10, CLC 2025-2026)
+#
+# Everything runs on an isolated Docker network with no route to the Internet.
+# Use run_lab.ps1 (Windows) or run_lab.sh (Linux/macOS) from the project root to run a
+# full scenario; they point Docker Compose at this file and set the variables below.
+#
+# Paths in this file are relative to THIS folder (sources/docker/). Every image is built
+# from the project root (context ../..) so it can copy files from sources/ and detection/.
+# ============================================================================
+
+name: ddos_lab
+
+networks:
+  ddos_lab:
+    driver: bridge
+    internal: true            # no route out of the lab
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+  # Only used by the optional "viewer" service: a normal network that lets one proxy
+  # publish a port on your own machine. The lab network itself stays internal.
+  outside:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.250.0/24            # fixed, so Docker never hands the lab's 172.20.0.0/16 to this network
+
+x-timeline: &timeline
+  LAB_T0_FILE: /results/t0                 # shared start time, written by the run script
+  BASELINE: ${BASELINE:-60}                # seconds of normal traffic before the attack
+  ATTACK: ${ATTACK:-120}                   # seconds the attack lasts
+  TOTAL: ${TOTAL:-220}                     # whole run (baseline + attack + tail)
+
+services:
+
+  # ---------------------------------------------------------------- victim
+  # Small nginx. The detector shares this container's network namespace, so it
+  # sees the victim's packets and its iptables / sysctl changes apply to it.
+  victim:
+    image: nginx:alpine
+    container_name: victim
+    networks:
+      ddos_lab:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ../victim/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../victim/index.html:/usr/share/nginx/html/index.html:ro
+      - ../../output/results:/results
+    cap_add:
+      - NET_ADMIN
+    cpus: 0.5
+    sysctls:
+      net.ipv4.tcp_syncookies: 0           # off at start; the detector turns it on
+      net.ipv4.tcp_max_syn_backlog: 64
+      net.core.somaxconn: 64
+    # Like a real server, the victim has a default route. Without one the kernel
+    # drops spoofed SYNs before they ever take a backlog slot.
+    command: ["/bin/sh", "-c", "ip route replace default dev eth0; exec nginx -g 'daemon off;'"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  # -------------------------------------------------------------- detector
+  detector:
+    build:
+      context: ../..
+      dockerfile: sources/docker/Dockerfile.detector
+    image: ddos-lab/detector
+    container_name: detector
+    network_mode: "service:victim"         # same network namespace as the victim
+    cap_add:
+      - NET_ADMIN                          # iptables, sysctl
+      - NET_RAW                            # packet capture
+    security_opt:
+      - systempaths=unconfined             # lets the detector write tcp_syncookies
+    volumes:
+      - ../../output/results:/results
+      - ../../detection/models:/app/models:ro
+    environment:
+      <<: *timeline
+      VICTIM_IP: 172.20.0.2
+      IFACE: eth0
+      WINDOW: ${WINDOW:-5}
+      CALIB_WINDOWS: ${CALIB_WINDOWS:-5}
+      K_Z: ${K_Z:-3}
+      DEFENSE: ${DEFENSE:-1}                  # 0 = detection only (dry run)
+      MODEL_DIR: /app/models
+      DETECTOR_MODE: ${DETECTOR_MODE:-auto}   # auto | ml | entropy
+      RECORD_FLOWS: ${RECORD_FLOWS:-0}        # 1 = save flow features as training data
+    depends_on:
+      victim:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------- client
+  # Legitimate users. Scale it (--scale client=6): each container is one user
+  # with its own IP and request rate. They run for the whole timeline.
+  client:
+    build:
+      context: ../..
+      dockerfile: sources/docker/Dockerfile.client
+    image: ddos-lab/client
+    networks:
+      - ddos_lab
+    volumes:
+      - ../../output/results:/results
+    environment:
+      <<: *timeline
+      VICTIM_IP: 172.20.0.2
+      FLASH_MULT: ${FLASH_MULT:-1}         # >1: the users send this many times more requests during the attack period (flash crowd)
+    depends_on:
+      victim:
+        condition: service_healthy
+
+  # ------------------------------------------------------------------- bot
+  # HTTP or UDP flood. Every container is a separate machine with its own IP:
+  # a real distributed attack. Scale it (--scale bot=20).
+  bot:
+    build:
+      context: ../..
+      dockerfile: sources/docker/Dockerfile.attacker
+    image: ddos-lab/attacker
+    networks:
+      - ddos_lab
+    volumes:
+      - ../../output/results:/results
+    cap_add:
+      - NET_RAW
+    environment:
+      <<: *timeline
+      VICTIM_IP: 172.20.0.2
+      ATTACK_TYPE: ${ATTACK_TYPE:-http}              # http | udp
+      HTTP_CONCURRENCY: ${HTTP_CONCURRENCY:-15}      # parallel connections per bot
+      UDP_INTERVAL_US: ${UDP_INTERVAL_US:-1500}      # microseconds between packets per bot
+    depends_on:
+      victim:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------- viewer
+  # Optional (profile "view"): open http://localhost:8080 in your browser to see the
+  # victim's web page, live, while the attack runs. It is a plain proxy that sits on
+  # the lab network and on a normal network, and only forwards port 80 to the victim.
+  # It is just one more (very quiet) user for the detector. Started by -View.
+  viewer:
+    image: nginx:alpine
+    container_name: viewer
+    networks:
+      ddos_lab: {}
+      outside: {}
+    ports:
+      - "127.0.0.1:8080:80"                 # reachable from this machine only
+    command:
+      - /bin/sh
+      - -c
+      - |
+        printf 'server { listen 80; location / { proxy_pass http://172.20.0.2:80; proxy_connect_timeout 3s; proxy_read_timeout 5s; proxy_next_upstream off; } }\n' > /etc/nginx/conf.d/default.conf
+        exec nginx -g 'daemon off;'
+    depends_on:
+      victim:
+        condition: service_healthy
+    profiles:
+      - view
+
+  # ----------------------------------------------------------- syn_attacker
+  # One machine, thousands of forged source addresses (hping3 --rand-source).
+  syn_attacker:
+    build:
+      context: ../..
+      dockerfile: sources/docker/Dockerfile.attacker
+    image: ddos-lab/attacker
+    container_name: syn_attacker
+    networks:
+      - ddos_lab
+    volumes:
+      - ../../output/results:/results
+    cap_add:
+      - NET_RAW
+    environment:
+      <<: *timeline
+      VICTIM_IP: 172.20.0.2
+      ATTACK_TYPE: syn
+      SYN_INTERVAL_US: ${SYN_INTERVAL_US:-1000}      # 1000 us = about 1000 SYN/s
+    depends_on:
+      victim:
+        condition: service_healthy
+    profiles:
+      - syn

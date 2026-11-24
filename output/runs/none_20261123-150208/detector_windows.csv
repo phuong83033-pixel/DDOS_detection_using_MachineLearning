@@ -1,0 +1,1 @@
+ts,t,mode,window,pkts,pps,bytes,uniq_src,H_src,Hn_src,z_H,z_pps,syn_in,syn_rate,ack_in,syn_ack_ratio,udp_share,syn_uniq_ratio,synack_out,kern_pkts,kern_drops,ml_flows,ml_attack_flows,alarm_entropy,alarm_syn,alarm_thr,alarm,attack_type,n_blocked,action

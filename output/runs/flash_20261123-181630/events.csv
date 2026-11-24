@@ -1,0 +1,4 @@
+ts,source,event,detail
+1795432433.910,detector,start,mode=ML;window=5.0;iptables=iptables;k_z=3.0;defense=1
+1795432475.106,detector,baseline,pps=207.4;H=2.56;sd_pps=51.9;sd_H=0.15;sources=6.0
+1795432570.174,detector,stop,windows=25;kernel_pkts=61978;kernel_drops=0;loss=0.00%

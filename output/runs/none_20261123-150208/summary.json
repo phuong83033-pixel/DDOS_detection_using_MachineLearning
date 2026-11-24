@@ -1,0 +1,22 @@
+{
+  "run": "none_20261123-150208",
+  "attack": "none",
+  "attack_start_s": null,
+  "attack_stop_s": null,
+  "detector_mode": "?",
+  "false_alarm_events_before_attack": 0,
+  "syn_protection": null,
+  "client": {
+    "baseline": {
+      "requests": 887,
+      "success_pct": 100.0,
+      "p50_ms": 1.8,
+      "p95_ms": 2.5
+    }
+  },
+  "client_recovery_s": null,
+  "block": {
+    "blocked": 0,
+    "legit_clients_blocked": []
+  }
+}

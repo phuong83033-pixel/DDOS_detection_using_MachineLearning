@@ -1,0 +1,14 @@
+﻿detector  | [defense] iptables backend: iptables
+detector  | [detector] mode=ENTROPY  window=5.0s  total=135.0s
+detector  | [w000] pps=  191.6  src=  6  H=2.57  z_H=+nan  syn/s=16
+detector  | [w004] pps=  194.0  src=  6  H=2.58  z_H=+nan  syn/s=17
+detector  | [baseline] pps=196.6 (sd 49.2)  H=2.57 bits (sd 0.15)
+detector  | [w008] pps=  201.2  src=  6  H=2.57  z_H=+0.0  syn/s=16
+detector  | [ALARM] window 12: http_flood  pps=8538  z_H=+5.6
+detector  | [DEFEND] blocked 16 sources (kmeans_ratio)
+detector  | [DEFEND] blocked 4 sources (kmeans_ratio)
+detector  | [w016] pps=  260.2  src= 26  H=3.62  z_H=+7.0  syn/s=17
+detector  | [OK] traffic back to normal (window 17)
+detector  | [w020] pps=  224.4  src= 26  H=3.24  z_H=+4.4  syn/s=17
+detector  | [w024] pps=  204.4  src=  7  H=2.74  z_H=+1.1  syn/s=16
+detector  | [detector] done. windows=27  kernel packets=210957  dropped=0 (0.00%)

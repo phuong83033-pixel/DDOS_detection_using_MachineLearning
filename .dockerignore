@@ -1,0 +1,7 @@
+# The images are built from the project root; keep the big folders out of the build context.
+output
+docs
+detection/data
+detection/models
+**/__pycache__
+**/*.pyc

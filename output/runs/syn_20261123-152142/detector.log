@@ -1,0 +1,11 @@
+﻿detector  | [defense] iptables backend: iptables
+detector  | [detector] mode=ENTROPY  window=5.0s  total=135.0s
+detector  | [w000] pps=  167.0  src=  6  H=2.58  z_H=+nan  syn/s=14
+detector  | [w004] pps=  168.8  src=  6  H=2.54  z_H=+nan  syn/s=14
+detector  | [baseline] pps=173.8 (sd 43.4)  H=2.57 bits (sd 0.15)  sources=6.0  busiest source=199 pkts/window
+detector  | [w008] pps=  173.4  src=  6  H=2.58  z_H=+0.1  syn/s=14
+detector  | [w012] pps=  166.8  src=  6  H=2.58  z_H=+0.1  syn/s=14
+detector  | [w016] pps=  165.8  src=  6  H=2.57  z_H=-0.0  syn/s=14
+detector  | [w020] pps=  166.6  src=  6  H=2.56  z_H=-0.0  syn/s=14
+detector  | [w024] pps=  172.0  src=  6  H=2.58  z_H=+0.1  syn/s=14
+detector  | [detector] done. windows=27  kernel packets=23065  dropped=0 (0.00%)

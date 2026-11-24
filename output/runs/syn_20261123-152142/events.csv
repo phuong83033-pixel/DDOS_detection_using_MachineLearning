@@ -1,0 +1,6 @@
+ts,source,event,detail
+1795421934.902,detector,start,mode=ENTROPY;window=5.0;iptables=iptables;k_z=3.0
+1795421978.000,detector,baseline,pps=173.8;H=2.57;sd_pps=43.4;sd_H=0.15;sources=6.0
+1795421993.862,syn-attacker,attack_start,syn;172.20.0.4
+1795422053.887,syn-attacker,attack_stop,syn;172.20.0.4
+1795422083.177,detector,stop,windows=27;kernel_pkts=23065;kernel_drops=0;loss=0.00%

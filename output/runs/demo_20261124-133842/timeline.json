@@ -1,0 +1,1 @@
+{"attack": "http", "baseline": 20, "attack_seconds": 20, "total": 60, "bots": 20, "clients": 6, "defense": true}

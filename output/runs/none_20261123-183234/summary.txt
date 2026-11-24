@@ -1,0 +1,16 @@
+Run: none_20261123-183234   attack: none   detector mode: ML
+
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests= 1018  success=100.0%  p50=1.9 ms  p95=2.5 ms
+
+Would-block (dry run) sources: 0
+Legitimate clients blocked: none
+
+Window-level detection (6 windows, 0 attack; all windows after calibration):
+  detector                 prec  recall     F1     FPR     MCC   TP/FP/FN/TN
+  detector                  n/a     n/a    n/a   0.000     n/a   0/0/0/6
+  fixed_rate_threshold      n/a     n/a    n/a   0.000     n/a   0/0/0/6
+
+Capture: 12048 packets seen by the kernel, 0 dropped (0.0%)

@@ -1,0 +1,17 @@
+Run: flash_20261123-173925   attack: flash   detector mode: ENTROPY
+
+Flash crowd 45s -> 105s (legitimate users, 4x the requests): detector alarms = 0
+False alarms before the attack: 0
+
+Client success (legitimate users):
+  baseline                 requests= 4213  success=100.0%  p50=1.7 ms  p95=2.4 ms
+
+Would-block (dry run) sources: 0
+Legitimate clients blocked: none
+
+Window-level detection (19 windows, 0 attack; all windows after calibration):
+  detector                 prec  recall     F1     FPR     MCC   TP/FP/FN/TN
+  detector                  n/a     n/a    n/a   0.000     n/a   0/0/0/19
+  fixed_rate_threshold    0.000     n/a  0.000   0.632     n/a   0/12/0/7
+
+Capture: 48950 packets seen by the kernel, 0 dropped (0.0%)
