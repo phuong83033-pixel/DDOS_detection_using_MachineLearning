@@ -33,6 +33,7 @@ analyze_results.py can compare the two detectors on the same data.
 Output (in /results):  detector_windows.csv, events.csv (shared timeline)
 """
 import csv
+import json
 import math
 import os
 import shutil
@@ -257,6 +258,56 @@ def main():
     print(f"[detector] mode={mode}  window={WINDOW}s  confirm={CONFIRM_WINDOWS} window(s)  total={TOTAL}s", flush=True)
 
     out_path = os.path.join(RESULTS, "detector_windows.csv")
+    alert_path = os.path.join(RESULTS, "alert_status.json")
+    alert_history = []
+    last_attack_type = ""
+
+    def push_alert(level, title, detail, t_rel):
+        alert_history.insert(0, {
+            "id": f"{t_rel:.1f}_{len(alert_history)}_{level}",
+            "time": time.strftime("%H:%M:%S"),
+            "t": round(t_rel, 1),
+            "level": level,
+            "title": title,
+            "detail": detail,
+        })
+        del alert_history[15:]
+
+    def write_alert_json(state, t_rel=0.0, window_idx=0, pps=0.0, H=0.0, z_H=0.0, uniq=0,
+                         ml_flows=0, ml_attack=0, action=""):
+        blocked_ips = sorted(ip_to_str(ip) for ip in (defense.blocked.keys() if DEFENSE_ON else would_block))
+        payload = {
+            "ts": round(time.time(), 3),
+            "t": round(t_rel, 1),
+            "mode": mode,
+            "defense_on": DEFENSE_ON,
+            "state": state,
+            "in_episode": in_episode,
+            "attack_type": last_attack_type if in_episode else "",
+            "window": window_idx,
+            "window_sec": WINDOW,
+            "confirm_windows": CONFIRM_WINDOWS,
+            "suspect_count": suspect[0],
+            "pps": round(pps, 1),
+            "H_src": round(H, 2),
+            "z_H": round(z_H, 2) if z_H == z_H else None,
+            "uniq_src": uniq,
+            "ml_flows": ml_flows,
+            "ml_attack_flows": ml_attack,
+            "blocked_count": len(blocked_ips),
+            "blocked_ips": blocked_ips,
+            "syn_protection": defense.syn_protection,
+            "last_action": action,
+            "alerts": alert_history[:8],
+        }
+        try:
+            tmp = alert_path + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as af:
+                json.dump(payload, af)
+            os.replace(tmp, alert_path)
+        except OSError:
+            pass
+
     f = open(out_path, "w", newline="", encoding="utf-8")
     writer = csv.writer(f)
     writer.writerow(CSV_COLUMNS)
@@ -268,13 +319,18 @@ def main():
     suspect = [0]               # consecutive suspicious windows (a list so close_window can change it)
     syn_noted = False
     would_block = set()                                  # dry-run only
+
+    push_alert("info", "Detector started", f"Mode: {mode} | Window: {WINDOW}s | Defense: {'ON' if DEFENSE_ON else 'DRY-RUN'}", 0.0)
+    write_alert_json("CALIBRATING")
+
     cap.kernel_stats()          # reset kernel counters
     end_time = t0 + TOTAL
     total_pkts = total_drops = 0
 
     def close_window(k, w, now):
-        nonlocal in_episode, quiet, syn_noted, total_pkts, total_drops
+        nonlocal in_episode, quiet, syn_noted, total_pkts, total_drops, last_attack_type
         T = WINDOW
+        t_rel = now - t0
         pps = w.pkts / T
         uniq = len(w.src)
         H = entropy_bits(w.src.values())
@@ -298,6 +354,8 @@ def main():
             base.add(pps, H, syn_rate, uniq, max(w.src.values()) if w.src else 0)
             if k == CALIB_WINDOWS:
                 base.fit()
+                push_alert("ok", "Baseline calibrated",
+                           f"Normal traffic: {base.mu_pps:.1f} pkt/s, entropy H={base.mu_H:.2f} bits, ~{base.mu_uniq:.0f} sources", t_rel)
         elif base.ready:
             z_H = (H - base.mu_H) / base.sd_H
             z_pps = (pps - base.mu_pps) / base.sd_pps
@@ -313,6 +371,8 @@ def main():
         act = bool(alarm and (in_episode or suspect[0] >= CONFIRM_WINDOWS))
         if alarm and not act:
             print(f"[SUSPECT] window {k}: pps={pps:.0f}  waiting to confirm ({suspect[0]}/{CONFIRM_WINDOWS})", flush=True)
+            push_alert("warn", f"Suspicious spike ({suspect[0]}/{CONFIRM_WINDOWS})",
+                       f"Rate {pps:.0f} pkt/s, z_H={z_H:+.1f}, ML attack flows={ml_attack} — waiting to confirm", t_rel)
 
         attack_type = ""
         action = ""
@@ -323,11 +383,14 @@ def main():
                 attack_type = "udp_flood"
             else:
                 attack_type = "http_flood"
+            last_attack_type = attack_type
             if not in_episode:
                 in_episode = True
                 log_event("detector", "alarm",
                           f"{attack_type};z_H={z_H:.1f};pps={pps:.0f};window={k}")
                 print(f"[ALARM] window {k}: {attack_type}  pps={pps:.0f}  z_H={z_H:+.1f}", flush=True)
+                push_alert("danger", f"DDoS ALARM: {attack_type.upper().replace('_', ' ')}",
+                           f"Window {k}: {pps:.0f} pkt/s ({uniq} sources, z_H={z_H:+.1f}, ML attack flows={ml_attack})", t_rel)
             quiet = 0
 
             if attack_type == "syn_flood":
@@ -338,9 +401,11 @@ def main():
                         action = f"syn_protection:{method}"
                         log_event("detector", "syncookies", method)
                         print(f"[DEFEND] SYN protection: {method}", flush=True)
+                        push_alert("shield", "Mitigation: SYN protection enabled", f"Method: {method}", t_rel)
                     else:
                         log_event("detector", "would_syncookies", "dry-run")
                         print("[DRY-RUN] would enable SYN protection", flush=True)
+                        push_alert("warn", "Dry-run: would enable SYN protection", "Defense disabled (-NoDefense)", t_rel)
             else:
                 residual = {ip: c for ip, c in w.src.items()
                             if ip not in defense.blocked and ip not in NEVER_BLOCK}
@@ -361,6 +426,11 @@ def main():
                     would_block.update(new)
                     for ip in new:
                         log_event("detector", "would_block", f"{ip_to_str(ip)};{detail[ip]}")
+                    if new:
+                        ip_list = ", ".join(ip_to_str(ip) for ip in sorted(new)[:6])
+                        more = f" (+{len(new) - 6} more)" if len(new) > 6 else ""
+                        push_alert("warn", f"Dry-run: identified {len(new)} attacker IP(s) ({why.upper()})",
+                                   f"Would block: {ip_list}{more}", t_rel)
                     done = []
                 else:
                     done = defense.block(attackers)
@@ -369,14 +439,31 @@ def main():
                     for ip in done:
                         log_event("detector", "block", f"{ip_to_str(ip)};{detail[ip]}")
                     print(f"[DEFEND] blocked {len(done)} sources ({why})", flush=True)
+                    ip_list = ", ".join(ip_to_str(ip) for ip in sorted(done)[:6])
+                    more = f" (+{len(done) - 6} more)" if len(done) > 6 else ""
+                    push_alert("shield", f"Mitigation: blocked {len(done)} bot IP(s) via iptables ({why.upper()})",
+                               f"Blocked: {ip_list}{more}", t_rel)
         else:
             quiet += 1
             if in_episode and quiet >= QUIET_WINDOWS:
                 in_episode = False
                 log_event("detector", "recovered", f"window={k}")
                 print(f"[OK] traffic back to normal (window {k})", flush=True)
+                push_alert("ok", "Traffic recovered to normal",
+                           f"Window {k}: {pps:.0f} pkt/s — {len(defense.blocked)} attacker IP(s) remain blocked by firewall", t_rel)
 
         defense.expire()
+        if not base.ready:
+            det_state = "CALIBRATING"
+        elif act:
+            det_state = "ATTACK"
+        elif alarm:
+            det_state = "SUSPECT"
+        elif in_episode:
+            det_state = "MITIGATED"
+        else:
+            det_state = "NORMAL"
+        write_alert_json(det_state, t_rel, k, pps, H, z_H, uniq, ml_flows, ml_attack, action)
         writer.writerow([
             f"{now:.3f}", f"{now - t0:.1f}", mode, k, w.pkts, f"{pps:.1f}", w.bytes, uniq,
             f"{H:.3f}", f"{Hn:.3f}", f"{z_H:.2f}", f"{z_pps:.2f}", w.syn, f"{syn_rate:.1f}", w.ack,
